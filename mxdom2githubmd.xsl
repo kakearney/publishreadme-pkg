@@ -145,7 +145,7 @@ Copyright 1984-2012 The MathWorks, Inc.
 <xsl:template match="b">**<xsl:apply-templates/>**</xsl:template>
 <xsl:template match="i">*<xsl:apply-templates/>*</xsl:template>
 <xsl:template match="tt">`<xsl:apply-templates/>`</xsl:template>
-<xsl:template match="a">[<xsl:value-of select="@text"/>](<xsl:value-of select="@href"/>)</xsl:template>
+<xsl:template match="a">[<xsl:value-of select="text()"/>](<xsl:value-of select="@href"/>)</xsl:template>
 <xsl:template match="html"><xsl:apply-templates select="@text"/></xsl:template>
 <xsl:template match="h3">
 

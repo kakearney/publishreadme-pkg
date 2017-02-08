@@ -1,7 +1,7 @@
-function publishreadme(folder)
+function publishreadme(folder, xmlflag)
 %PUBLISHREADME Publish a README.m file to HTML and GitHub-flavored markdown
 %
-% publishreadme(folder)
+% publishreadme(folder, xmlflag)
 %
 % This function is designed to publish a README.m documentation and
 % examples script to both HTML and GitHub-flavored markdown, making it
@@ -13,19 +13,32 @@ function publishreadme(folder)
 %
 % Input variables:
 %
-%   folder: folder name.  The folder should contain a file names README.m.
-%           A README.md and README.html file will be added to this folder.
-%           If necessary, a readmeExtras folder that holds any supporting
-%           images will also be added.
+%   folder:     folder name.  The folder should contain a file names
+%               README.m. A README.md and README.html file will be added to
+%               this folder. If necessary, a readmeExtras folder that holds
+%               any supporting images will also be added.
+%
+%   xmlflag:    logical scalar, true to produce an XML output as well.  If not
+%               included, will be false.
 
 % Copyright 2016 Kelly Kearney
 
+validateattributes(folder, {'char'}, {}, 'publishreadme', 'folder');
+
+if nargin < 2
+    xmlflag = false;
+end
+
+validateattributes(xmlflag, {'logical'}, {'scalar'}, 'publishreadme', 'xmlflag');
 
 % READMEs already on the path (pretty common in external toolboxes) will
 % shadow these, which prevents the target file from being published.  Make
 % a copy to get around that.   
 
 mfile = fullfile(folder, 'README.m');
+if ~exist(mfile, 'file')
+    error('File %s not found', mfile);
+end
 tmpfile = [tempname('.') '.m'];
 [~,tmpbase,~] = fileparts(tmpfile);
 copyfile(mfile, tmpfile);
@@ -53,25 +66,33 @@ mdOpt = struct('format', 'html', ...
                'createThumbnail', false, ...
                'maxWidth', 800);
            
-% xmlOpt = struct('format', 'xml', ...
-%                'showCode', true, ...
-%                'outputDir', readmefolder, ...
-%                'createThumbnail', false, ...
-%                'maxWidth', 800);
+xmlOpt = struct('format', 'xml', ...
+               'showCode', true, ...
+               'outputDir', readmefolder, ...
+               'createThumbnail', false, ...
+               'maxWidth', 800);
 
 % Publish, and rename READMEs back to original names
            
 htmlfile = publish(tmpfile, htmlOpt);
 mdfile   = publish(tmpfile, mdOpt);
-% xmlfile  = publish(tmpfile, xmlOpt);
+if xmlflag
+    xmlfile  = publish(tmpfile, xmlOpt);
+end
 
 movefile(mdfile,   fullfile(readmefolder, 'README.md'));
 movefile(htmlfile, fullfile(readmefolder, 'README.html'));
-% movefile(xmlfile,  fullfile(readmefolder, 'README.xml'));
+if xmlflag
+    movefile(xmlfile,  fullfile(readmefolder, 'README.xml'));
+end
 
 delete(tmpfile);
 
 % Move main files up, and replace references to supporting materials
+
+if xmlflag
+    movefile(fullfile(readmefolder, 'README.xml'), folder);
+end
 
 Files = dir(readmefolder);
 fname = setdiff({Files.name}, {'.', '..', 'README.md', 'README.html'});
@@ -81,6 +102,7 @@ if isempty(fname)
     movefile(fullfile(readmefolder, 'README.html'), folder);
     rmdir(readmefolder, 's');
 else
+
     fid = fopen(fullfile(readmefolder, 'README.md'), 'r');
     textmd = textscan(fid, '%s', 'delimiter', '\n');
     textmd = textmd{1};
@@ -105,5 +127,6 @@ else
     
     delete(fullfile(readmefolder, 'README.md'));
     delete(fullfile(readmefolder, 'README.html'));
+    
    
 end

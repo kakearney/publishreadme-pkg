@@ -9,7 +9,7 @@ function publishreadme(folder, xmlflag)
 % documentation.
 %
 % The markdown stylesheet can also be used independently by publish.m to
-% convert any file writtten with Matlab markup to markdown. 
+% convert any file written with Matlab markup to markdown. 
 %
 % Input variables:
 %
@@ -113,6 +113,7 @@ else
     texthtml = texthtml{1};
     fclose(fid);
     
+    textmd   = strrep(textmd, '&times;', 'x'); % until I figure out how to do this in the XSL file
     textmd   = strrep(textmd,   tmpbase, fullfile('.', 'readmeExtras', 'README'));
     texthtml = strrep(texthtml, tmpbase, fullfile('.', 'readmeExtras', 'README'));
     for ii = 1:length(fname)   

@@ -80,6 +80,14 @@ if xmlflag
     xmlfile  = publish(tmpfile, xmlOpt);
 end
 
+% Correct HTML in markdown (R2016b+ uses html in command window printouts)
+
+mdtxt = fileread(mdfile);
+mdtxt = strrep(mdtxt, '&times;', 'x');
+fid = fopen(mdfile, 'wt');
+fprintf(fid, '%s', mdtxt);
+fclose(fid);
+
 movefile(mdfile,   fullfile(readmefolder, 'README.md'));
 movefile(htmlfile, fullfile(readmefolder, 'README.html'));
 if xmlflag

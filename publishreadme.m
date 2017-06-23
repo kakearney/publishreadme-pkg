@@ -84,6 +84,7 @@ end
 
 mdtxt = fileread(mdfile);
 mdtxt = strrep(mdtxt, '&times;', 'x');
+mdtxt = strrep(mdtxt, '&gt;', '>');
 fid = fopen(mdfile, 'wt');
 fprintf(fid, '%s', mdtxt);
 fclose(fid);

@@ -112,15 +112,13 @@ if isempty(fname)
     rmdir(readmefolder, 's');
 else
 
-    fid = fopen(fullfile(readmefolder, 'README.md'), 'r');
-    textmd = textscan(fid, '%s', 'delimiter', '\n');
-    textmd = textmd{1};
-    fclose(fid);
+    % Replace a few special characters that render incorrectly in html
     
-    fid = fopen(fullfile(readmefolder, 'README.html'), 'r');
-    texthtml = textscan(fid, '%s', 'delimiter', '\n');
-    texthtml = texthtml{1};
-    fclose(fid);
+    textmd = fileread(fullfile(readmefolder, 'README.md'));
+    textmd = regexp(textmd, '\n', 'split')';
+    
+    texthtml = fileread(fullfile(readmefolder, 'README.html'));
+    texthtml = regexp(texthtml, '\n', 'split')';    
     
     textmd   = strrep(textmd, '&times;', 'x'); % until I figure out how to do this in the XSL file
     textmd   = strrep(textmd,   tmpbase, fullfile('.', 'readmeExtras', 'README'));
@@ -138,5 +136,4 @@ else
     delete(fullfile(readmefolder, 'README.md'));
     delete(fullfile(readmefolder, 'README.html'));
     
-   
 end

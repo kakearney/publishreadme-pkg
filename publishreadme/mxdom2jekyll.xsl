@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-This is an XSL stylesheet which converts mscript XML files into Github-
-flavored Markdown. Use the XSLT command to perform the conversion.
+This is an XSL stylesheet which converts mscript XML files into Markdown, 
+with code formatted for syntax highlighting via Liquid. Use the XSLT 
+command to perform the conversion.
 
 Modified by Kelly Kearney 2017
 Copyright 1984-2012 The MathWorks, Inc.
@@ -30,7 +31,12 @@ Copyright 1984-2012 The MathWorks, Inc.
 
 
 <xsl:template match="mscript">
-# <xsl:value-of select="$title"/>
+---
+title: "<xsl:value-of select="$title"/>"
+layout: post
+permalink:
+---
+
 <xsl:text>&#xa;</xsl:text>
 <xsl:text>&#xa;</xsl:text>
     <xsl:call-template name="header"/>
@@ -138,9 +144,9 @@ Copyright 1984-2012 The MathWorks, Inc.
 </xsl:template>
 <xsl:template match="pre">
 <xsl:text>&#xa;</xsl:text>
-```
+{% highlight none %}
 <xsl:apply-templates/>
-```
+{% endhighlight %}
 <xsl:text>&#xa;</xsl:text>
 </xsl:template>
 <xsl:template match="b">**<xsl:apply-templates/>**</xsl:template>
@@ -158,9 +164,9 @@ Copyright 1984-2012 The MathWorks, Inc.
 <!-- Detecting M-Code in Comments-->
 <xsl:template match="text/mcode-xmlized">
 <xsl:text>&#xa;</xsl:text>
-```matlab
+{% highlight matlab linenos %}
 <xsl:apply-templates/>
-```
+{% endhighlight %}
 <xsl:text>&#xa;</xsl:text>
 </xsl:template>
 
@@ -168,9 +174,9 @@ Copyright 1984-2012 The MathWorks, Inc.
 
 <xsl:template match="mcode-xmlized">
 <xsl:text>&#xa;</xsl:text>
-```matlab
+{% highlight matlab linenos %}
 <xsl:apply-templates/>
-```
+{% endhighlight %}
 <xsl:text>&#xa;</xsl:text>
 </xsl:template>
 
@@ -181,9 +187,9 @@ Copyright 1984-2012 The MathWorks, Inc.
 </xsl:when>
 <xsl:otherwise><xsl:text>&#xa;</xsl:text>
 <xsl:text>&#xa;</xsl:text>
-```
+{% highlight none %}
 <xsl:apply-templates/>
-```<xsl:text>&#xa;</xsl:text>
+{% endhighlight %}<xsl:text>&#xa;</xsl:text>
 <xsl:text>&#xa;</xsl:text>
 </xsl:otherwise>
 </xsl:choose>
@@ -192,11 +198,11 @@ Copyright 1984-2012 The MathWorks, Inc.
 
 <!-- Figure and model snapshots and equations -->
 <xsl:template match="img[@class='equation']">
-![<xsl:value-of select="@alt"/>](<xsl:value-of select="@src"/>)
+{% include scaledimage.html src="<xsl:value-of select="@src"/>" scale="1" %}
 </xsl:template>
 
 <xsl:template match="img">
-![<xsl:value-of select="@alt"/>](<xsl:value-of select="@src"/>)
+{% include scaledimage.html src="<xsl:value-of select="@src"/>" scale="1" %}
 </xsl:template>
 
 <!-- Stash original code in HTML for easy slurping later. -->

@@ -16,7 +16,9 @@ function publishreadme(folder, xmlflag)
 %   folder:     folder name.  The folder should contain a file names
 %               README.m. A README.md and README.html file will be added to
 %               this folder. If necessary, a readmeExtras folder that holds
-%               any supporting images will also be added.
+%               any supporting images will also be added.  Note: relative
+%               path markers (~, ., ..) may not be properly expanded;
+%               please use full pathnames instead. 
 %
 %   xmlflag:    logical scalar, true to produce an XML output as well.  If not
 %               included, will be false.
